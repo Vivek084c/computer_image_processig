@@ -43,9 +43,11 @@ if __name__ == "__main__":
 
     # getting predition on specified image path
     image_path="dataset/img_1.jpg"
-    result = make_prediction(image_path, model)
+    result = model.predict(image_path, show=False)
+    print(result[0].names)
+    print(result[0].boxes.xyxy)
+ 
 
-    display_head_body(image_path, result)
     
 
     # #displaying the orginal image ---> passing the original image
