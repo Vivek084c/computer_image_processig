@@ -32,6 +32,7 @@ def display_head_body(original_image_path, result):
         cv2.waitKey()
         cv2.destroyAllWindows()
         
+        
 
 
 
