@@ -19,18 +19,49 @@ def show_head_predicted_image(original_image_path, cordinates):
     cv2.imshow("predicted image" , predicted_image)
     cv2.waitKey()
 
+def map(result):
+    """
+    it will take result vectore and return head and body vector
+    """
+    map_data = {}
+    for i in range(2):
+        temp = []
+        class_name = result[0].name(int(result[0].boxes.cls[i]))
+        temp.append(class_name)
+        class_vector = result[0].boxes.xyyx[i]
+        temp.append(class_vector)
+        map_data[i] = temp
+    return map_data
+        
+
 def display_head_body(original_image_path, result):
-    # getting the head and body vector
+    # # getting the head and body vector
+    # a, b=int(result[0].boxes.cls[0]), int(result[0].boxes.cls[1])
+    # print(f"the valeu of a : {a} and the value of b : {b}")
     
+    #setting up rectangle box 
+    k=0
     for i in result[0].names:
         original_image = cv2.imread(original_image_path)
         cv2.imshow("original_image_1", original_image)
         # print(i, result[0].names[i])
-        print(result[0].boxes.xyxy[i], f"its the { result[0].names[i]} vector")
+        print(result[0].boxes.xyxy[i], f"its the { result[0].names[i]} vector and the value of i is :{i}")
         cv2.rectangle(original_image,  (int(result[0].boxes.xyxy[i][0]), int(result[0].boxes.xyxy[i][1])), (int(result[0].boxes.xyxy[i][2]), int(result[0].boxes.xyxy[i][3])), (0,255,0), 1)
-        cv2.imshow(f"predicted {result[0].names[i]} image", original_image)
+        cv2.imshow(f"predicted {result[0].names[int(result[0].boxes.cls[k])]} image", original_image)
         cv2.waitKey()
         cv2.destroyAllWindows()
+        k+=1
+
+
+    # for i, _ in enumerate(map(result)):
+    #     original_image = cv2.imread(original_image_path)
+    #     cv2.rectangle(original_image, ( ((_[1][0]), (_[1][1])), ((_[1][2]), (_[1][3])) ) ,  (0,255,0), 1)
+    #     cv2.imshow(f"predicted {_[0]} image", original_image)
+    #     cv2.waitKey()
+    #     cv2.destroyAllWindows()
+        
+
+
         
 
 
@@ -39,42 +70,16 @@ if __name__ == "__main__":
     # setting up the model 
     print("start")
     model = YOLO("best.pt")
-
-    # getting predition on specified image path
-    image_path="dataset/img_1.jpg"
-    result = model.predict(source=image_path, show=False)
-    # using the xywh formate 
-    head = result[0].boxes.xywh[0]
-    body = result[0].boxes.xywh[1]
-    original_img = cv2.imread(image_path)
-
-
-    # cv2.rectangle(original_img , convert_xywh_to_xyxy(head), (0,255,0), 1)
-    # cv2.imshow("head image" , original_img)
-    # cv2.waitKey()
-
-    # original_img = cv2.imread(image_path)
-    # cv2.rectangle(original_img , convert_xywh_to_xyxy(body), (0,255,0), 1)
-    # cv2.imshow("body image" , original_img)
-    # cv2.waitKey()
-
-
-
-    # result[0].save_txt("vivek.txt")
-    # print(result[0].names)
-    # print(result[0].boxes.xyxyn[0])
-    # print(result[0].boxes.xyxyn[1])
-    # head = result[0].boxes.xyxy[0]
-    # body = result[0].boxes.xyxy[1]
-
-    # cv2.rectangle(original_img,  (int(head[0]), int(head[1])), (int(head[2]), int(head[3])), (0,255,0), 1)
-    # cv2.imshow("head image" , original_img)
-    # cv2.waitKey()
-
-    # original_img = cv2.imread(image_path)
-    # cv2.rectangle(original_img,  (int(body[0]), int(body[1])), (int(body[2]), int(body[3])), (0,255,0), 1)
-    # cv2.imshow("body image", original_img)
-    # cv2.waitKey()
+    for k in range(5):
+        # getting predition on specified image path
+        image_path=f"dataset/img_{k}.jpg"
+        result = model.predict(source=image_path, show=False)
+        
+        display_head_body(image_path, result)
+   
+   
+   
+    
 
 
 
