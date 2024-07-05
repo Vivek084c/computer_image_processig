@@ -32,7 +32,6 @@ def display_head_body(original_image_path, result):
         cv2.waitKey()
         cv2.destroyAllWindows()
         
-        
 
 
 
@@ -43,26 +42,39 @@ if __name__ == "__main__":
 
     # getting predition on specified image path
     image_path="dataset/img_1.jpg"
-    result = model.predict(image_path, show=False)
-    print(result[0].names)
-    print(result[0].boxes.xyxy)
- 
+    result = model.predict(source=image_path, show=False)
+    # using the xywh formate 
+    head = result[0].boxes.xywh[0]
+    body = result[0].boxes.xywh[1]
+    original_img = cv2.imread(image_path)
 
-    
 
-    # #displaying the orginal image ---> passing the original image
-    # show_img_from_path(image_path)
+    # cv2.rectangle(original_img , convert_xywh_to_xyxy(head), (0,255,0), 1)
+    # cv2.imshow("head image" , original_img)
+    # cv2.waitKey()
 
-    # #displaying head and body prediction image
-    # show_head_predicted_image(original_image_path= image_path, cordinates=head)
-    # show_head_predicted_image(original_image_path=image_path,cordinates=body )
-    
-    # # #displaying body prediction image
-    # # original_image =cv2.imread(image_path)
-    # # predicted_image = cv2.rectangle(original_image,  (int(body[0]), int(body[1])), (int(body[2]), int(body[3])), (0,255,0), 1)
-    # # cv2.imshow("body prediction", predicted_image)
-    # # cv2.waitKey()
+    # original_img = cv2.imread(image_path)
+    # cv2.rectangle(original_img , convert_xywh_to_xyxy(body), (0,255,0), 1)
+    # cv2.imshow("body image" , original_img)
+    # cv2.waitKey()
 
+
+
+    # result[0].save_txt("vivek.txt")
+    # print(result[0].names)
+    # print(result[0].boxes.xyxyn[0])
+    # print(result[0].boxes.xyxyn[1])
+    # head = result[0].boxes.xyxy[0]
+    # body = result[0].boxes.xyxy[1]
+
+    # cv2.rectangle(original_img,  (int(head[0]), int(head[1])), (int(head[2]), int(head[3])), (0,255,0), 1)
+    # cv2.imshow("head image" , original_img)
+    # cv2.waitKey()
+
+    # original_img = cv2.imread(image_path)
+    # cv2.rectangle(original_img,  (int(body[0]), int(body[1])), (int(body[2]), int(body[3])), (0,255,0), 1)
+    # cv2.imshow("body image", original_img)
+    # cv2.waitKey()
 
 
 
