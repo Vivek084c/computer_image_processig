@@ -2,22 +2,11 @@
 from ultralytics import YOLO
 import cv2
 
-def make_prediction(imgae_path, model):
-    return model.predict(imgae_path, show=False)
-
-def get_head_body_cordinates(result):
-    # {0: 'head', 1: 'body'}----> wrong (idk how) ----> follow :  {0: 'body', 1: 'head'}
-    return result[0].boxes.xyxy[1],result[0].boxes.xyxy[0]
-
 def show_img_from_path(path):
     cv2.imshow("original_image" , cv2.imread(path))
     cv2.waitKey()
 
-def show_head_predicted_image(original_image_path, cordinates):
-    original_image = cv2.imread(original_image_path)
-    predicted_image = cv2.rectangle(original_image,  (int(cordinates[0]), int(cordinates[1])), (int(cordinates[2]), int(cordinates[3])), (0,255,0), 1)
-    cv2.imshow("predicted image" , predicted_image)
-    cv2.waitKey()
+
 
 def map(result):
     """
@@ -32,7 +21,16 @@ def map(result):
         temp.append(class_vector)
         map_data[i] = temp
     return map_data
-        
+
+
+def save_predition(original_image_path, result):
+    k = 0
+    image_number = int(image_path.split("_")[1].split(".")[0])
+    for i in result[0].names:
+        original_image = cv2.imread(original_image_path)
+        _ = original_image[int(result[0].boxes.xyxy[i][1]) :  int(result[0].boxes.xyxy[i][3]),  int(result[0].boxes.xyxy[i][0]) :int(result[0].boxes.xyxy[i][2] ) ]
+        cv2.imwrite(f"prediction/{result[0].names[int(result[0].boxes.cls[k])]}/img_{image_number}.jpg", _)
+        k+=1
 
 def display_head_body(original_image_path, result):
     # # getting the head and body vector
@@ -43,9 +41,6 @@ def display_head_body(original_image_path, result):
     k=0
     for i in result[0].names:
         original_image = cv2.imread(original_image_path)
-        cv2.imshow("original_image_1", original_image)
-        # print(i, result[0].names[i])
-        print(result[0].boxes.xyxy[i], f"its the { result[0].names[i]} vector and the value of i is :{i}")
         cv2.rectangle(original_image,  (int(result[0].boxes.xyxy[i][0]), int(result[0].boxes.xyxy[i][1])), (int(result[0].boxes.xyxy[i][2]), int(result[0].boxes.xyxy[i][3])), (0,255,0), 1)
         cv2.imshow(f"predicted {result[0].names[int(result[0].boxes.cls[k])]} image", original_image)
         cv2.waitKey()
@@ -70,12 +65,17 @@ if __name__ == "__main__":
     # setting up the model 
     print("start")
     model = YOLO("best.pt")
-    for k in range(5):
-        # getting predition on specified image path
-        image_path=f"dataset/img_{k}.jpg"
+    for i in range(4):
+        image_path=f"dataset/img_{i}.jpg"
         result = model.predict(source=image_path, show=False)
+        display_head_body(image_path, result)    
+
+        save_predition(image_path, result)
+
+    image_path=f"dataset/img_99.jpg"
+    print(int(image_path.split("_")[1].split(".")[0]))
+
         
-        display_head_body(image_path, result)
    
    
    
