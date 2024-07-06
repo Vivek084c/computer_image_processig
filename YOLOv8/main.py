@@ -1,43 +1,67 @@
 #improting the libraries
 from ultralytics import YOLO
 import cv2
+import numpy as np
 
-def show_img_from_path(path):
+
+
+def initiate_model(model_path):
+    return YOLO(model_path)
+
+def save_predition(original_image_path, result):
+    """
+    return head and body prediction for an image
+    Args: 
+        original_image_path- original path of input image
+        result- prediction of yolo model
+    return: 
+        output- dictionary with numpy array of the head and body cropped images
+    """
+
+    output ={}
+    k = 0
+    for i in result[0].names:
+        temp = []
+        original_image = cv2.imread(original_image_path)
+        _ = original_image[int(result[0].boxes.xyxy[i][1]) :  int(result[0].boxes.xyxy[i][3]),  int(result[0].boxes.xyxy[i][0]) :int(result[0].boxes.xyxy[i][2] ) ]
+        output[result[0].names[int(result[0].boxes.cls[k])]] = _
+        k+=1
+    return output
+
+
+def show_img(path: str):
+    """
+    show the image file from the given file path
+    Args: 
+        path: path to image file
+    return: 
+        None
+    """
     cv2.imshow("original_image" , cv2.imread(path))
     cv2.waitKey()
 
 
-
-def map(result):
+def show_img(path: np.ndarray):
     """
-    it will take result vectore and return head and body vector
+    show the image file from the given numpy arrat
+    Args: 
+        path: numpy array to process the image
+    return:
+        None
     """
-    map_data = {}
-    for i in range(2):
-        temp = []
-        class_name = result[0].name(int(result[0].boxes.cls[i]))
-        temp.append(class_name)
-        class_vector = result[0].boxes.xyyx[i]
-        temp.append(class_vector)
-        map_data[i] = temp
-    return map_data
-
-
-def save_predition(original_image_path, result):
-    k = 0
-    image_number = int(image_path.split("_")[1].split(".")[0])
-    for i in result[0].names:
-        original_image = cv2.imread(original_image_path)
-        _ = original_image[int(result[0].boxes.xyxy[i][1]) :  int(result[0].boxes.xyxy[i][3]),  int(result[0].boxes.xyxy[i][0]) :int(result[0].boxes.xyxy[i][2] ) ]
-        cv2.imwrite(f"prediction/{result[0].names[int(result[0].boxes.cls[k])]}/img_{image_number}.jpg", _)
-        k+=1
+    cv2.imshow("prediction_componenet" , path)
+    cv2.waitKey()
+ 
 
 def display_head_body(original_image_path, result):
-    # # getting the head and body vector
-    # a, b=int(result[0].boxes.cls[0]), int(result[0].boxes.cls[1])
-    # print(f"the valeu of a : {a} and the value of b : {b}")
-    
-    #setting up rectangle box 
+    """
+    dispaly the head and body predicted anotated images for each class
+    Args: 
+        original_image_path: path to the original input file
+        result: prediction of the yolo model
+    return:
+        None
+    """
     k=0
     for i in result[0].names:
         original_image = cv2.imread(original_image_path)
@@ -48,32 +72,50 @@ def display_head_body(original_image_path, result):
         k+=1
 
 
-    # for i, _ in enumerate(map(result)):
-    #     original_image = cv2.imread(original_image_path)
-    #     cv2.rectangle(original_image, ( ((_[1][0]), (_[1][1])), ((_[1][2]), (_[1][3])) ) ,  (0,255,0), 1)
-    #     cv2.imshow(f"predicted {_[0]} image", original_image)
-    #     cv2.waitKey()
-    #     cv2.destroyAllWindows()
-        
-
-
-        
-
-
-
 if __name__ == "__main__":
     # setting up the model 
-    print("start")
     model = YOLO("best.pt")
-    for i in range(4):
-        image_path=f"dataset/img_{i}.jpg"
-        result = model.predict(source=image_path, show=False)
-        display_head_body(image_path, result)    
 
-        save_predition(image_path, result)
+    #running prediction on the image
+    image_path = "dataset/img_0.jpg"
+    result = model.predict(source= image_path, show=False)
 
-    image_path=f"dataset/img_99.jpg"
-    print(int(image_path.split("_")[1].split(".")[0]))
+    #getting the head and body cropped image
+    out_file = save_predition(image_path, result)
+    head_prediction = out_file["head"]
+    body_prediction = out_file["body"]
+
+    #viewing the prediction
+    show_img(head_prediction)
+    show_img(body_prediction)
+
+
+
+    # output_file = {}
+    # for i in range(1):
+    #     image_path=f"dataset/img_{i}.jpg"
+    #     result = model.predict(source=image_path, show=False)
+    #     display_head_body(image_path, result)    
+
+    #     output_file =  save_predition(image_path, result)
+
+    # print(output_file.keys())
+
+    # head_img = output_file["head"]
+    # body_img = output_file["body"]
+
+    # print("----showing the head image------")
+    # cv2.imshow("head", head_img)
+    # cv2.waitKey()
+    # cv2.destroyAllWindows()
+
+    # print("-----showing the body image ------")
+    # cv2.imshow("body" , body_img)
+    # cv2.waitKey()
+    # cv2.destroyAllWindows()
+
+    # image_path=f"dataset/img_99.jpg"
+    # print(int(image_path.split("_")[1].split(".")[0]))
 
         
    
