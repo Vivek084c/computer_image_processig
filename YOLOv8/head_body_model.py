@@ -77,22 +77,28 @@ def display_head_body_prediction(original_image_path, result):
         k+=1
 
 
-# if __name__ == "__main__":
-#     # setting up the model 
-#     model = YOLO("best.pt")
+if __name__ == "__main__":
+    # setting up the model 
+    model = YOLO("best.pt")
+    
+    #running prediction on the image
+    image_path = "dataset/img_0.jpg"
+    result = model.predict(source= image_path, show=False)
 
-#     #running prediction on the image
-#     image_path = "dataset/img_1.jpg"
-#     result = model.predict(source= image_path, show=False)
+    #getting the head and body cropped image
+    out_file = save_predition(image_path, result)
+    head_prediction = out_file["head"]
+    body_prediction = out_file["body"]
 
-#     #getting the head and body cropped image
-#     out_file = save_predition(image_path, result)
-#     head_prediction = out_file["head"]
-#     body_prediction = out_file["body"]
+    print(head_prediction.shape)
+    print(body_prediction.shape)
 
-#     #viewing the prediction
-#     show_img(head_prediction)
-#     show_img(body_prediction)
+    #viewing the prediction
+    show_img(head_prediction)
+    show_img(body_prediction)
+
+    
+
 
 
 
@@ -128,5 +134,12 @@ def display_head_body_prediction(original_image_path, result):
    
     
 
-
+# first elenemtn of head hight : 78
+# first elenemtn of head width : 76
+# first elenemtn of body hight : 454
+# first elenemtn of body width : 154
+# 83.5
+# 78.4
+# 460.7
+# 175.7
 
