@@ -3,14 +3,6 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 
-class classifier_model:
-    def __init__(self,  original_image_path, model_path):
-        """"""
-        self.original_image_path = original_image_path
-        self.model = YOLO(model_path)
-        self.result = self.model.predict(source= original_image_path, show=False)
-
-
 def save_predition(original_image_path, result):
     """
     return head and body prediction for an image
