@@ -14,7 +14,7 @@ class HeadBodyClassifier:
     def get_head_body_vector(self):
         #loading the model
         model = YOLO(self.model_path)
-        self.result = model.predict(source=self.input_img_path, show=False)
+        self.result = model.predict(source=self.input_img_path, show=False, conf=0.15)
         
 
         output_iamge ={}

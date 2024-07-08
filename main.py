@@ -7,15 +7,16 @@ import numpy as np
 
 if __name__ == "__main__":
     #input file path
-    input_image_path = "data/input_1/img_0.jpg"
-    input_mask_path = "data/Categories_1/img_0.png"
+    input_image_path = "data/input/img_17.jpg"
+    input_mask_path = "data/Categories_1/img_17.png"
     model_path = "YOLO_Model/best.pt"
 
     #defining a model class for head and body detection
     model_1 = head_body_detection_model.HeadBodyClassifier(input_img_path=input_image_path, input_mask_path=input_mask_path, model_path = model_path)
 
+    
     #getting the head and body vector
-    out_image_file, out_mask_fiile= model_1.get_head_body_vector()
+    out_image_file, out_mask_fiile = model_1.get_head_body_vector()
 
     #extracting head and body vector
     head_img = out_image_file["head"]
