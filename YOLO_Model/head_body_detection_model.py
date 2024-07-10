@@ -11,13 +11,51 @@ class HeadBodyClassifier:
         self.result = None 
         
 
+    
+
+    #function to handle the above vector generation when head or body not detected
+    def handle_not_detection(self, output_image: dict, output_mask):
+        
+        #handling the not output_image detection
+        if len(output_image.keys()) !=2:
+            if not "head" in output_image.keys():
+                #head is not detected, we append a dummy head vector
+                output_image["head"] = np.zeros((128, 128, 3), dtype=np.uint8)
+            else:
+                pass
+
+            if not "body" in output_image.keys():
+                #body is not detected, we append a dummy body vector
+                output_image["body"]  =  np.zeros((512, 512, 3), dtype=np.uint8)
+            else:
+                pass
+        else:
+            pass
+
+        if len(output_mask.keys()) !=2:
+            if not "head" in output_mask.keys():
+                #head is not detected, we append a dummy head vector
+                output_mask["head"] =  np.zeros((128, 128, 3), dtype=np.uint8)
+            else:
+                pass
+
+            if not "body" in output_mask.keys():
+                #body is not detected, we append a dummy body vector
+                output_mask["body"]  = np.zeros((512, 512, 3), dtype=np.uint8)
+            else:
+                pass
+        else:
+            pass
+
+        return output_image, output_mask
+            
     def get_head_body_vector(self):
         #loading the model
         model = YOLO(self.model_path)
         self.result = model.predict(source=self.input_img_path, show=False, conf=0.15)
         
 
-        output_iamge ={}
+        output_image ={}
         output_mask={}
         k = 0
         for i in self.result[0].names:
@@ -27,12 +65,12 @@ class HeadBodyClassifier:
             PermissionError(mask_image.shape)
             _ = original_image[int(self.result[0].boxes.xyxy[i][1]) :  int(self.result[0].boxes.xyxy[i][3]),  int(self.result[0].boxes.xyxy[i][0]) :int(self.result[0].boxes.xyxy[i][2] ) ]
             __ = mask_image[int(self.result[0].boxes.xyxy[i][1]) :  int(self.result[0].boxes.xyxy[i][3]),  int(self.result[0].boxes.xyxy[i][0]) :int(self.result[0].boxes.xyxy[i][2] ) ]
-            output_iamge[self.result[0].names[int(self.result[0].boxes.cls[k])]] = _
+            output_image[self.result[0].names[int(self.result[0].boxes.cls[k])]] = _
             output_mask[self.result[0].names[int(self.result[0].boxes.cls[k])]] = __
             k+=1
-        return output_iamge, output_mask
+        
+        return self.handle_not_detection( output_image, output_mask)
     
-
 
     def save_predition(self):
         """
