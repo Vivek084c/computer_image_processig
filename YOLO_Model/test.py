@@ -9,9 +9,36 @@ import head_body_detection_model
 
 if __name__ == "__main__":
     image_path  = "data/input/img_17.jpg"
-    mask_path = "data/Categories_1/img_17.png"
+    mask_path = "data/Categories_1/img_0.png"
     model  = YOLO("YOLO_Model/best.pt")
     result = model.predict(source= image_path, show = False)
+
+
+    output_vector = {}
+    for x in range(len(result[0].boxes.xyxy)):
+        output_vector[int(result[0].boxes.cls[x])] =result[0].boxes.xyxy[x]
+    print(output_vector)
+
+    ### putting rectangle
+    i = 0
+    map=["head", "body"]
+    for k in output_vector.keys():
+        original_img = cv2.imread(image_path)
+        crop_image = original_img[int(result[0].boxes.xyxy[i][1]) :  int(result[0].boxes.xyxy[i][3]),  int(result[0].boxes.xyxy[i][0]) :int(result[0].boxes.xyxy[i][2] ) ]
+        type = map[k]
+        cv2.imshow(type, crop_image)
+        cv2.waitKey()
+        cv2.destroyAllWindows()
+        i+=1
+
+
+    
+ 
+ 
+
+        
+    
+        
 
 
     # print(f"path: {image_path}",  result[0].boxes.cls)
@@ -32,26 +59,7 @@ if __name__ == "__main__":
     #     # cv2.waitKey()
     #     # cv2.destroyAllWindows()
     #     i+=1
-    map = ["head","body"]
-    for k in range(0,50):
-        image_path  = f"data/input/img_{k}.jpg"
-        mask_path = f"data/Categories_1/img_{k}.png"
-        model  = YOLO("YOLO_Model/best.pt")
-        result = model.predict(source= image_path, show = False)
-        # print(f"result vectors: {result[0].boxes.xyxy}")
-        # print(f"classes available: {result[0].boxes.cls}")
-
-        outptu_file ={}
-        for x in range(len(result[0].boxes.xyxy)):
-            outptu_file[int(result[0].boxes.cls[x])] =(result[0].boxes.xyxy[x])
-    di = []
-
-    if list(outptu_file.keys())[0] == 0:
-        di = list(outptu_file.values())
-    else:
-        di = list(outptu_file.values())
-        di = di[::-1]
-    print(len(di))
+    
         
     
 

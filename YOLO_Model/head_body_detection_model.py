@@ -48,6 +48,8 @@ class HeadBodyClassifier:
             pass
 
         return output_image, output_mask
+    def get_num(self):
+        return self.input_img_path.split("/")[-1].split("_")[-1].split(".")[0]
             
     def get_prediction_vector(self):
         image_path = self.input_img_path
@@ -57,8 +59,60 @@ class HeadBodyClassifier:
         
         output_vector = {}
         for x in range(len(result[0].boxes.xyxy)):
-            output_vector[map[int(result[0].boxes.cls[x])]] =(result[0].boxes.xyxy[x])
+            output_vector[int(result[0].boxes.cls[x])] =(result[0].boxes.xyxy[x])
         return output_vector
+    
+    def save_prediction_input(self, out_img_vector):
+        map=["head","body"]
+        image_num = self.get_num()
+        map_path = ["data/input_head/img_", "data/input_body/img_"]
+        # map_path = ["img_head", "img_body"]
+        if len(out_img_vector) == 2:
+            #we have two class prediction
+            for i in range(2):
+                vector = out_img_vector[i]
+                orginal_image =cv2.imread(self.input_img_path)
+                crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
+                cv2.imwrite(f"{map_path[i]}{image_num}.jpg", crop_file)
+                # cv2.imshow(f"{map[i]}.jpg", crop_file)
+                # cv2.waitKey()
+                # cv2.destroyAllWindows()
+        elif len(out_img_vector) ==1:
+            #we have one class
+            if list(out_img_vector.keys())[0] == 1:
+                #vector at index 0 is body vector
+                for i in range(1,2):
+                    vector = out_img_vector[i]
+                    orginal_image =cv2.imread(self.input_img_path)
+                    crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
+                    cv2.imwrite(f"data/input_body/img_{image_num}.jpg", crop_file)
+                    # cv2.imwrite(f"img_{image_num}.jpg", crop_file)
+                    # cv2.waitKey()
+                    # cv2.destroyAllWindows()
+                #wring a black head file
+                cv2.imwrite(f"data/input_head/img_{image_num}.jpg", np.zeros((128, 128, 3), dtype=np.uint8))
+
+            else:
+                #vector at index 0 is head vector
+                for i in range(0,1):
+                    vector = out_img_vector[i]
+                    orginal_image =cv2.imread(self.input_img_path)
+                    crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
+                    # cv2.imwrite(f"img_{image_num}.jpg", crop_file)
+                    cv2.imwrite(f"data/input_head/img_{image_num}.jpg", crop_file)
+                    # cv2.waitKey()
+                    # cv2.destroyAllWindows()
+                #writing a black body file
+                cv2.imwrite(f"data/input_body/img_{image_num}.jpg", np.zeros((512, 512, 3), dtype=np.uint8))
+        else:
+            #none vector present
+            #wring a black head and body file
+            cv2.imwrite(f"data/input_head/img_{image_num}.jpg", np.zeros((128, 128, 3), dtype=np.uint8))
+            cv2.imwrite(f"data/input_body/img_{image_num}.jpg", np.zeros((512, 512, 3), dtype=np.uint8))
+
+
+
+        
     
     def get_vector_list(self):
         """
