@@ -49,53 +49,45 @@ class HeadBodyClassifier:
 
         return output_image, output_mask
             
-    def final_fin(self):
+    def get_prediction_vector(self):
         image_path = self.input_img_path
         mask_path = self.input_mask_path
         model = YOLO(self.model_path)
         result = model.predict(source= image_path, show =False)
         
-        i=0
-        output_img = {}
-        output_mak = {}
-        for k in result[0].boxes.cls:
-            corrosponding_vector = result[0].boxes.xyxy[int(k)]
-            # print(int(k), corrosponding_vector)
-            orignal_iamge = cv2.imread(image_path)
-            mask_image = cv2.imread(mask_path)
-            file = orignal_iamge[int(result[0].boxes.xyxy[i][1]) :  int(result[0].boxes.xyxy[i][3]),  int(result[0].boxes.xyxy[i][0]) :int(result[0].boxes.xyxy[i][2] ) ]
-            mask = mask_image[int(result[0].boxes.xyxy[i][1]) :  int(result[0].boxes.xyxy[i][3]),  int(result[0].boxes.xyxy[i][0]) :int(result[0].boxes.xyxy[i][2] ) ]
-            name = f"{result[0].names[int(k)]}"
-            output_img[name] = file
-            output_mak[name] = mask
-            # cv2.imshow(name, mask)
-            # cv2.waitKey()
-            # cv2.destroyAllWindows()
-            i+=1
-        output_img, output_mak = self.handle_not_detection(output_img, output_mak)
-        return output_img, output_mak
-
-
-    def get_head_body_vector(self):
-        #loading the model
+        output_vector = {}
+        for x in range(len(result[0].boxes.xyxy)):
+            output_vector[map[int(result[0].boxes.cls[x])]] =(result[0].boxes.xyxy[x])
+        return output_vector
+    
+    def get_vector_list(self):
+        """
+        returns the output list of predicted classes in sequence
+        Args:
+            -
+        Return:
+            di: Dict - with output classes corrdinates in xyxy form
+        """
         model = YOLO(self.model_path)
-        self.result = model.predict(source=self.input_img_path, show=False, conf=0.15)
+        result = model.predict(source=self.input_img_path, show = False)
+
+        output_file = {}
+        for x in range(len(result[0].boxes.xyxy)):
+            output_file[int(result[0].boxes.cls[x])] = result[0].boxes.xyxy[x]
+
+        di = []
+        if list(output_file.keys())[0] == 0:
+            di = list(output_file.values())
+        else:
+            di = list(output_file.values())
+            di = di[::-1]
+
+        return di
+    
+    
         
 
-        output_image ={}
-        output_mask={}
-        k = 0
-        for i in self.result[0].names:
-            temp = []
-            original_image = cv2.imread(self.input_img_path)
-            mask_image = cv2.imread(self.input_mask_path)
-            _ = original_image[int(self.result[0].boxes.xyxy[i][1]) :  int(self.result[0].boxes.xyxy[i][3]),  int(self.result[0].boxes.xyxy[i][0]) :int(self.result[0].boxes.xyxy[i][2] ) ]
-            __ = mask_image[int(self.result[0].boxes.xyxy[i][1]) :  int(self.result[0].boxes.xyxy[i][3]),  int(self.result[0].boxes.xyxy[i][0]) :int(self.result[0].boxes.xyxy[i][2] ) ]
-            output_image[self.result[0].names[int(self.result[0].boxes.cls[k])]] = _
-            output_mask[self.result[0].names[int(self.result[0].boxes.cls[k])]] = __
-            k+=1
-        
-        return self.handle_not_detection( output_image, output_mask)
+
     
 
     def get_head_body_image_mask(self):
