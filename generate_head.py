@@ -3,7 +3,7 @@ import cv2
 
 
 if __name__ == "__main__":
-    for i in range(10000):
+    for i in range(0,60):
 
         if i%100 == 0 :
             print("-----------------",i,"--------------------------")
@@ -15,7 +15,7 @@ if __name__ == "__main__":
         out_img_vector = model_1.get_prediction_vector()
         # model writen a null black image for input if not detected, and black for output mask
         
-        model_1.save_prediction_input(out_img_vector)
+        model_1.save_prediction_input_mask(out_img_vector)
         
         
 
