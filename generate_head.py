@@ -3,7 +3,7 @@ import cv2
 
 
 if __name__ == "__main__":
-    for i in range(1000):
+    for i in range(100):
 
         if i%100 == 0 :
             print("-----------------",i,"--------------------------")
@@ -12,7 +12,7 @@ if __name__ == "__main__":
         model_path = "YOLO_Model/best.pt"
 
         model_1 = head_body_detection_model.HeadBodyClassifier(input_img_path=input_image_path, input_mask_path=input_mask_path, model_path = model_path)
-        out_img, out_mask = model_1.get_head_body_vector()
+        out_img, out_mask = model_1.final_fin()
         # model writen a null black image for input if not detected, and black for output mask
         out_img=out_img["head"]
         out_mask=out_mask["head"]
