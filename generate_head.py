@@ -3,7 +3,7 @@ import cv2
 
 
 if __name__ == "__main__":
-    for i in range(0,60):
+    for i in range(10000):
 
         if i%100 == 0 :
             print("-----------------",i,"--------------------------")
