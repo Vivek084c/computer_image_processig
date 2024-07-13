@@ -26,8 +26,9 @@ def create_dir(path):
         os.makedirs(path)
 
 def load_dataset(path, split=0.2):
-    train_x = sorted(glob(os.path.join(path, "input_1", "*")))[:100]
-    train_y = sorted(glob(os.path.join(path, "Categories_1", "*")))[:100]
+    train_x = sorted(glob(os.path.join(path, "input", "*")))[:300]
+    train_y = sorted(glob(os.path.join(path, "Categories_1", "*")))[:300]
+    print(len(train_x))
 
     split_size = int(split * len(train_x))
 
