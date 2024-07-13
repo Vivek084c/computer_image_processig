@@ -15,6 +15,15 @@ class HeadBodyClassifier:
 
     #function to handle the above vector generation when head or body not detected
     def handle_not_detection(self, output_image: dict, output_mask):
+        """
+        generate black head and body image when the detection is not found
+        Args:
+            output_iamge: dicitionary with output vector of YOLO prediction
+            output_mask: ouput mask vector
+        Returns:
+            output_image: output image vector with generated head and body
+            output_mask: output mask vector with generated head and body
+        """
         
         #handling the not output_image detection
         if len(output_image.keys()) !=2:
@@ -48,10 +57,23 @@ class HeadBodyClassifier:
             pass
 
         return output_image, output_mask
+    
     def get_num(self):
+        """
+        get the image number for the given image
+        Args:
+        Returns:
+            int: integer with image number
+        """
         return self.input_img_path.split("/")[-1].split("_")[-1].split(".")[0]
             
     def get_prediction_vector(self):
+        """
+        returns the image vector with head and body prediction
+        Args:
+        Return:
+            output_vector: dict - dictionary with head and body vector as key and their cordinates as values
+        """
         image_path = self.input_img_path
         mask_path = self.input_mask_path
         model = YOLO(self.model_path)
@@ -63,6 +85,12 @@ class HeadBodyClassifier:
         return output_vector
     
     def save_prediction_input(self, out_img_vector):
+        """
+        generate the balck head or body vector and save the output of yolo model to a specific directory
+        Args:
+            out_img_vector: prediction vector of yolo model
+        Returs:
+        """
         map=["head","body"]
         image_num = self.get_num()
         map_path = ["data/input_head/img_", "data/input_body/img_"]
@@ -74,9 +102,7 @@ class HeadBodyClassifier:
                 orginal_image =cv2.imread(self.input_img_path)
                 crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
                 cv2.imwrite(f"{map_path[i]}{image_num}.jpg", crop_file)
-                # cv2.imshow(f"{map[i]}.jpg", crop_file)
-                # cv2.waitKey()
-                # cv2.destroyAllWindows()
+
         elif len(out_img_vector) ==1:
             #we have one class
             if list(out_img_vector.keys())[0] == 1:
@@ -86,9 +112,7 @@ class HeadBodyClassifier:
                     orginal_image =cv2.imread(self.input_img_path)
                     crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
                     cv2.imwrite(f"data/input_body/img_{image_num}.jpg", crop_file)
-                    # cv2.imwrite(f"img_{image_num}.jpg", crop_file)
-                    # cv2.waitKey()
-                    # cv2.destroyAllWindows()
+
                 #wring a black head file
                 cv2.imwrite(f"data/input_head/img_{image_num}.jpg", np.zeros((128, 128, 3), dtype=np.uint8))
 
@@ -98,10 +122,8 @@ class HeadBodyClassifier:
                     vector = out_img_vector[i]
                     orginal_image =cv2.imread(self.input_img_path)
                     crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
-                    # cv2.imwrite(f"img_{image_num}.jpg", crop_file)
                     cv2.imwrite(f"data/input_head/img_{image_num}.jpg", crop_file)
-                    # cv2.waitKey()
-                    # cv2.destroyAllWindows()
+ 
                 #writing a black body file
                 cv2.imwrite(f"data/input_body/img_{image_num}.jpg", np.zeros((512, 512, 3), dtype=np.uint8))
         else:
@@ -111,6 +133,12 @@ class HeadBodyClassifier:
             cv2.imwrite(f"data/input_body/img_{image_num}.jpg", np.zeros((512, 512, 3), dtype=np.uint8))
 
     def save_prediction_input_mask(self, out_img_vector):
+        """
+        generate the balck head or body vector and save the output of yolo model to a specific directory
+        Args:
+            out_img_vector: prediction vector of yolo model
+        Returs:
+        """
         map=["head","body"]
         image_num = self.get_num()
         map_path = ["data/output_head/img_", "data/output_body/img_"]
@@ -122,9 +150,7 @@ class HeadBodyClassifier:
                 orginal_image =cv2.imread(self.input_mask_path)
                 crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
                 cv2.imwrite(f"{map_path[i]}{image_num}.png", crop_file)
-                # cv2.imshow(f"{map[i]}.jpg", crop_file)
-                # cv2.waitKey()
-                # cv2.destroyAllWindows()
+                
         elif len(out_img_vector) ==1:
             #we have one class
             if list(out_img_vector.keys())[0] == 1:
@@ -134,9 +160,7 @@ class HeadBodyClassifier:
                     orginal_image =cv2.imread(self.input_mask_path)
                     crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
                     cv2.imwrite(f"data/output_body/img_{image_num}.png", crop_file)
-                    # cv2.imwrite(f"img_{image_num}.jpg", crop_file)
-                    # cv2.waitKey()
-                    # cv2.destroyAllWindows()
+                    
                 #wring a black head file
                 cv2.imwrite(f"data/output_head/img_{image_num}.png", np.zeros((128, 128, 3), dtype=np.uint8))
 
@@ -148,8 +172,6 @@ class HeadBodyClassifier:
                     crop_file = orginal_image[int(vector[1]) :  int(vector[3]),  int(vector[0]) :int(vector[2] ) ]
                     # cv2.imwrite(f"img_{image_num}.jpg", crop_file)
                     cv2.imwrite(f"data/output_head/img_{image_num}.png", crop_file)
-                    # cv2.waitKey()
-                    # cv2.destroyAllWindows()
                 #writing a black body file
                 cv2.imwrite(f"data/output_body/img_{image_num}.png", np.zeros((512, 512, 3), dtype=np.uint8))
         else:
@@ -283,23 +305,4 @@ class HeadBodyClassifier:
             cv2.waitKey()
             cv2.destroyAllWindows()
             k+=1
-# first elenemtn of head hight : 78
-# first elenemtn of head width : 76
-# first elenemtn of body hight : 454
-# first elenemtn of body width : 154
-# 83.5
-# 78.4
-# 460.7
-# 175.7
 
-
-# --------- how to use yolo module ----------
-# input_data_path = "data/input_1/img_991.jpg"
-# model_path = "YOLO_Model/best.pt"
-# model_1 = head_body_detection_model.HeadBodyClassifier(input_img_path=input_data_path, model_path = model_path)
-# out_file = model_1.get_head_body_vector()
-# head_img = out_file["head"]
-# body_img = out_file["body"]
-
-# head_body_detection_model.show_img(head_img)
-# head_body_detection_model.show_img(body_img)
