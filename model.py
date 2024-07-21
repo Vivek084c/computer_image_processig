@@ -3,7 +3,7 @@ import tensorflow as tf
 import tensorflow as tf
 from tensorflow.keras import layers, models
 
-def fcn8(input_shape, num_classes=18):
+def fcn8(input_shape, num_classes=5):
     inputs = layers.Input(shape=input_shape)
 
     # Block 1

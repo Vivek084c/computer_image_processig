@@ -26,17 +26,23 @@ def create_dir(path):
         os.makedirs(path)
 
 def load_dataset(path, split=0.2):
-    train_x = sorted(glob(os.path.join(path, "input", "*")))[:300]
-    train_y = sorted(glob(os.path.join(path, "Categories_1", "*")))[:300]
+    train_x = sorted(glob(os.path.join(path, "input_head", "*")))[:7000]
+    train_y = sorted(glob(os.path.join(path, "output_head", "*")))[:7000]
     print(len(train_x))
 
-    split_size = int(split * len(train_x))
+    # temp code start
+    train_x,valid_x,test_x = train_x[0:5500], train_x[5500:6200], train_x[6200:]
+    train_y,valid_y,test_y = train_y[0:5500], train_y[5500:6200], train_y[6200:]
 
-    train_x, valid_x = train_test_split(train_x, test_size=split_size, random_state=42)
-    train_y, valid_y = train_test_split(train_y, test_size=split_size, random_state=42)
+    #temp code end
 
-    train_x, test_x = train_test_split(train_x, test_size=split_size, random_state=42)
-    train_y, test_y = train_test_split(train_y, test_size=split_size, random_state=42)
+    # split_size = int(split * len(train_x))
+
+    # train_x, valid_x = train_test_split(train_x, test_size=split_size, random_state=42)
+    # train_y, valid_y = train_test_split(train_y, test_size=split_size, random_state=42)
+
+    # train_x, test_x = train_test_split(train_x, test_size=split_size, random_state=42)
+    # train_y, test_y = train_test_split(train_y, test_size=split_size, random_state=42)
 
     return (train_x, train_y), (valid_x, valid_y), (test_x, test_y)
 
@@ -93,33 +99,45 @@ if __name__ == "__main__":
     create_dir("files")
 
     # Hyperparameters
-    IMG_H = 640
-    IMG_W = 832
-    NUM_CLASSES = 18
+    IMG_H = 256
+    IMG_W = 256
+    NUM_CLASSES = 5
     input_shape = (IMG_H, IMG_W, 3)
     batch_size = 8
     lr = 1e-4
     num_epoch = 30
 
     dataset_path = "data/"
-    model_path = os.path.join("files", "model.keras")
-    csv_path = os.path.join("files", "data.csv")
+    model_path = os.path.join("files", "model_head.keras")
+    csv_path = os.path.join("files", "data_head.csv")
 
     # Loading the dataset
     (train_x, train_y), (valid_x, valid_y), (test_x, test_y) = load_dataset(dataset_path)
 
-    # Colormap processing
+
+
+
+    # Colormap processing --- original 
+    # COLORMAP = [
+    #     [0, 0, 0], [0, 0, 128], [0, 0, 255], [0, 85, 0], [51, 0, 170],
+    #     [0, 85, 255], [85, 0, 0], [221, 119, 0], [0, 85, 85], [85, 85, 0],
+    #     [0, 51, 85], [128, 86, 52], [0, 28, 0], [255, 0, 0], [221, 170, 51],
+    #     [225, 225, 0], [170, 255, 85], [85, 255, 170]
+    # ]
+    # CLASSES = [
+    #     "Background", "Hat", "Hair", "Sunglasses", "Upper-clothes", "Skirt",
+    #     "Pants", "Dress", "Belt", "Left-shoe", "Right-shoe", "Face", "Left-leg",
+    #     "Right-leg", "Left-arm", "Right-arm", "Bag", "Scarf"
+    # ]
+
+    #colormap for head model
     COLORMAP = [
-        [0, 0, 0], [0, 0, 128], [0, 0, 255], [0, 85, 0], [51, 0, 170],
-        [0, 85, 255], [85, 0, 0], [221, 119, 0], [0, 85, 85], [85, 85, 0],
-        [0, 51, 85], [128, 86, 52], [0, 28, 0], [255, 0, 0], [221, 170, 51],
-        [225, 225, 0], [170, 255, 85], [85, 255, 170]
+        [0, 0, 0], [0, 0, 128], [0, 0, 255], [0, 85, 0], [128, 86, 52]
     ]
     CLASSES = [
-        "Background", "Hat", "Hair", "Sunglasses", "Upper-clothes", "Skirt",
-        "Pants", "Dress", "Belt", "Left-shoe", "Right-shoe", "Face", "Left-leg",
-        "Right-leg", "Left-arm", "Right-arm", "Bag", "Scarf"
+        "Background", "Hat", "Hair", "Sunglasses", "Face"
     ]
+
 
     # Dataset pipeline
     train_dataset = tf_dataset(train_x, train_y, batch=batch_size)
@@ -132,6 +150,8 @@ if __name__ == "__main__":
         optimizer=tf.keras.optimizers.Adam(lr)
     )
     model.summary()
+
+    
 
     # Training
     callbacks = [
