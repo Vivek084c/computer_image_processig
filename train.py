@@ -145,9 +145,12 @@ if __name__ == "__main__":
 
     # Model
     model = model.fcn8(input_shape=input_shape, num_classes=NUM_CLASSES)
+    # sdg optimizer
+    sgd = tf.keras.optimizers.SGD(learning_rate=lr, momentum=0.9, decay=0.0005)
+
     model.compile(
         loss="categorical_crossentropy",
-        optimizer=tf.keras.optimizers.Adam(lr)
+        optimizer=sgd
     )
     model.summary()
 
