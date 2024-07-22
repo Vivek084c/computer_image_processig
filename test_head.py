@@ -9,6 +9,7 @@ from sklearn.model_selection import train_test_split
 from tensorflow.keras.callbacks import ModelCheckpoint, ReduceLROnPlateau, EarlyStopping, CSVLogger
 import model
 from train import load_dataset
+from tqdm import tqdm
 
 def create_dir(path):
     if not os.path.exists(path):
@@ -57,4 +58,6 @@ if __name__ == "__main__":
 
     """prediction and evaluation"""
     score = []
-    for x,y in tqdm
+    for x,y in tqdm(zip(test_x, test_y), total=len(train_x)):
+        name = x.split("")
+        break
