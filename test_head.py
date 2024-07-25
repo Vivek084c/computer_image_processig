@@ -63,7 +63,7 @@ if __name__ == "__main__":
     print(f"train: {len(train_x)}/{len(train_y)} test: {len(test_x)}/{len(test_y)} valid: {len(valid_x)}/{len(valid_y)}")
     print("")
 
-    # model.summary()
+    model.summary()
 
 
     """prediction and evaluation"""
@@ -100,9 +100,9 @@ if __name__ == "__main__":
         pred = pred.astype(np.float32)
 
 
-        """ Saving the prediction """
-        save_image_path = f"results/{name}.png"
-        save_results(image_x, mask_x, pred, save_image_path)
+        # """ Saving the prediction """
+        # save_image_path = f"results/{name}.png"
+        # save_results(image_x, mask_x, pred, save_image_path)
 
         
 

@@ -8,28 +8,30 @@ import head_body_detection_model
 
 
 if __name__ == "__main__":
-    image_path  = "data/input/img_17.jpg"
+    image_path  = "vivek.jpg"
     mask_path = "data/Categories_1/img_0.png"
     model  = YOLO("YOLO_Model/best.pt")
     result = model.predict(source= image_path, show = False)
+    result  = result[0]
+    result.save_crop("vivek_1")
 
 
-    output_vector = {}
-    for x in range(len(result[0].boxes.xyxy)):
-        output_vector[int(result[0].boxes.cls[x])] =result[0].boxes.xyxy[x]
-    print(output_vector)
+    # output_vector = {}
+    # for x in range(len(result[0].boxes.xyxy)):
+    #     output_vector[int(result[0].boxes.cls[x])] =result[0].boxes.xyxy[x]
+    # print(output_vector)
 
-    ### putting rectangle
-    i = 0
-    map=["head", "body"]
-    for k in output_vector.keys():
-        original_img = cv2.imread(image_path)
-        crop_image = original_img[int(result[0].boxes.xyxy[i][1]) :  int(result[0].boxes.xyxy[i][3]),  int(result[0].boxes.xyxy[i][0]) :int(result[0].boxes.xyxy[i][2] ) ]
-        type = map[k]
-        cv2.imshow(type, crop_image)
-        cv2.waitKey()
-        cv2.destroyAllWindows()
-        i+=1
+    # ### putting rectangle
+    # i = 0
+    # map=["head", "body"]
+    # for k in output_vector.keys():
+    #     original_img = cv2.imread(image_path)
+    #     crop_image = original_img[int(result[0].boxes.xyxy[i][1]) :  int(result[0].boxes.xyxy[i][3]),  int(result[0].boxes.xyxy[i][0]) :int(result[0].boxes.xyxy[i][2] ) ]
+    #     type = map[k]
+    #     cv2.imshow(type, crop_image)
+    #     cv2.waitKey()
+    #     cv2.destroyAllWindows()
+    #     i+=1
 
 
     
