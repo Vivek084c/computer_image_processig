@@ -3,6 +3,7 @@ from ultralytics import YOLO
 import cv2
 import numpy as np
 import os 
+from Models.models import build_unet
 
 import head_body_detection_model
 
@@ -11,7 +12,7 @@ if __name__ == "__main__":
     image_path  = "vivek.jpg"
     mask_path = "data/Categories_1/img_0.png"
     model  = YOLO("YOLO_Model/best.pt")
-    result = model.predict(source= image_path, show = False)
+    result = model.predict(source= 1, show = True)
     result  = result[0]
     result.save_crop("vivek_1")
 

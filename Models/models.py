@@ -45,5 +45,5 @@ def build_unet(input_shape, num_classes):
 
 if __name__ == "__main__":
     input_shape = (512, 512, 3)
-    model = build_unet(input_shape)
+    model = build_unet(input_shape, num_classes = 18)
     model.summary()
