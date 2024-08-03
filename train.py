@@ -27,12 +27,12 @@ def create_dir(path):
         os.makedirs(path)
 
 def load_dataset(path, split=0.2):
-    train_x = sorted(glob(os.path.join(path, "input", "*")))[:7000]
-    train_y = sorted(glob(os.path.join(path, "Categories_1", "*")))[:7000]
+    train_x = sorted(glob(os.path.join(path, "input", "*")))[:2500]
+    train_y = sorted(glob(os.path.join(path, "Categories_1", "*")))[:2500]
 
     # temp code start
-    train_x,valid_x,test_x = train_x[0:5500], train_x[5500:6200], train_x[6200:]
-    train_y,valid_y,test_y = train_y[0:5500], train_y[5500:6200], train_y[6200:]
+    train_x,valid_x,test_x = train_x[0:1850], train_x[1850:2250], train_x[2250:]
+    train_y,valid_y,test_y = train_y[0:1850], train_y[1850:2250], train_y[2250:]
 
     #temp code end
 
@@ -103,7 +103,7 @@ if __name__ == "__main__":
     IMG_W = 512
     NUM_CLASSES = 18
     input_shape = (IMG_H, IMG_W, 3)
-    batch_size = 8
+    batch_size = 10
     lr = 1e-4
     num_epoch = 30
 
@@ -130,13 +130,13 @@ if __name__ == "__main__":
         "Right-leg", "Left-arm", "Right-arm", "Bag", "Scarf"
     ]
 
-    # colormap for head model
-    COLORMAP = [
-        [0, 0, 0], [0, 0, 128], [0, 0, 255], [0, 85, 0], [128, 86, 52]
-    ]
-    CLASSES = [
-        "Background", "Hat", "Hair", "Sunglasses", "Face"
-    ]
+    # # colormap for head model
+    # COLORMAP = [
+    #     [0, 0, 0], [0, 0, 128], [0, 0, 255], [0, 85, 0], [128, 86, 52]
+    # ]
+    # CLASSES = [
+    #     "Background", "Hat", "Hair", "Sunglasses", "Face"
+    # ]
 
 
     # Dataset pipeline
@@ -157,17 +157,18 @@ if __name__ == "__main__":
     # visualising the model
     
 
-    # # Training
-    # callbacks = [
-    #     ModelCheckpoint(model_path, verbose=1, save_best_only=True),
-    #     ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=5, min_lr=1e-7, verbose=1),
-    #     CSVLogger(csv_path, append=True),
-    #     EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=False)
-    # ]
+    # Training
+    callbacks = [
+        ModelCheckpoint(model_path, verbose=1, save_best_only=True),
+        ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=5, min_lr=1e-7, verbose=1),
+        CSVLogger(csv_path, append=True),
+        EarlyStopping(monitor='val_loss', patience=20, restore_best_weights=False)
+    ]
 
-    # model.fit(
-    #     train_dataset,
-    #     validation_data=valid_dataset,
-    #     epochs=num_epoch,
-    #     callbacks=callbacks
-    # )
+    print("starting the training proces")
+    model.fit(
+        train_dataset,
+        validation_data=valid_dataset,
+        epochs=num_epoch,
+        callbacks=callbacks
+    )
