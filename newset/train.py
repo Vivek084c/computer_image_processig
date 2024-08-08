@@ -152,8 +152,8 @@ if __name__ == "__main__":
 
     #important paths
     dataset_path = "data/"
-    model_path = os.path.join("newset","files", "model_head.keras")
-    csv_path = os.path.join("newset","files", "data_head.csv")
+    model_path = os.path.join("newset","files", "model_vivek.keras")
+    csv_path = os.path.join("newset","files", "data_vivek.csv")
          
 
     # Loading the dataset
