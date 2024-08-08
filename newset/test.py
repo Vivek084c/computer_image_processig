@@ -81,7 +81,7 @@ if __name__ == "__main__":
     IMG_W = 512
     NUM_CLASSES = 18
     dataset_path = "data/"
-    model_path  = os.path.join("newset","files","model_vivek.keras")
+    model_path  = os.path.join("files","model_1.keras")
 
     """colormap"""
     COLORMAP = [

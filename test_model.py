@@ -100,7 +100,7 @@ if __name__ == "__main__":
         # data/output_head/img_0.png
 
         """reading the image file"""
-        image = cv2.imread("data/input_head/img_0.jpg", cv2.IMREAD_COLOR)
+        image = cv2.imread("data/input/img_5.jpg", cv2.IMREAD_COLOR)
         image = cv2.resize(image, (IMG_W, IMG_H))
         image_x = image
         image = image / 255.0
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
 
         """reading the mask file"""
-        mask = cv2.imread("data/output_head/img_0.png", cv2.IMREAD_COLOR)
+        mask = cv2.imread("data/Categories_1/img_5.png", cv2.IMREAD_COLOR)
         mask = cv2.resize(mask, (IMG_W, IMG_H))
         mask_x = mask
         onehot_mask = []
